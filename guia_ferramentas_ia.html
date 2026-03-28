@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Ferramentas de IA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0d0d1a;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 36px 20px 28px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(83,74,183,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(29,158,117,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: #7F77DD; margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: clamp(26px, 7vw, 42px);
+    font-weight: 700; line-height: 1.12;
+    color: #fff; margin-bottom: 10px;
+  }
+  .header h1 span { color: #7F77DD; }
+  .header p {
+    font-size: clamp(13px, 3.5vw, 15px);
+    color: rgba(255,255,255,0.45); line-height: 1.65;
+    max-width: 520px;
+  }
+
+  /* ── CATEGORY NAV ── */
+  .cat-nav {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(13,13,26,0.97);
+    backdrop-filter: blur(8px);
+  }
+  .cat-btn {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 7px 14px; border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent; color: rgba(255,255,255,0.4);
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .cat-btn:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+  .cat-btn.active { color: #fff; border-color: transparent; }
+  .cat-btn.c-text.active  { background: #534AB7; }
+  .cat-btn.c-image.active { background: #D85A30; }
+  .cat-btn.c-av.active    { background: #1D9E75; }
+  .cat-btn.c-prod.active  { background: #BA7517; }
+  .cat-btn.c-all.active   { background: rgba(255,255,255,0.12); color: #fff; }
+
+  /* ── SECTION ── */
+  .section { padding: 28px 20px 8px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 16px;
+  }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .si-text  { background: rgba(83,74,183,0.2); }
+  .si-image { background: rgba(216,90,48,0.2); }
+  .si-av    { background: rgba(29,158,117,0.2); }
+  .si-prod  { background: rgba(186,117,23,0.2); }
+
+  .section-meta {}
+  .section-tag {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .st-text  { color: #7F77DD; }
+  .st-image { color: #F0997B; }
+  .st-av    { color: #5DCAA5; }
+  .st-prod  { color: #EF9F27; }
+
+  .section-title {
+    font-size: clamp(17px, 4.5vw, 20px);
+    font-weight: 700; color: #fff;
+  }
+  .section-desc {
+    font-size: clamp(12px, 3vw, 13px);
+    color: rgba(255,255,255,0.4); line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  /* ── TOOL CARDS ── */
+  .tools-grid {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .tool-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 20px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .tc-text  { border-left-color: #534AB7; }
+  .tc-image { border-left-color: #D85A30; }
+  .tc-av    { border-left-color: #1D9E75; }
+  .tc-prod  { border-left-color: #BA7517; }
+
+  .tool-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .tool-name {
+    font-size: clamp(15px, 4vw, 17px);
+    font-weight: 700; color: #fff;
+  }
+  .tool-maker {
+    font-size: 11px; color: rgba(255,255,255,0.3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .tool-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .tb-text  { background: rgba(83,74,183,0.2);  color: #AFA9EC; }
+  .tb-image { background: rgba(216,90,48,0.2);  color: #F0997B; }
+  .tb-av    { background: rgba(29,158,117,0.2); color: #5DCAA5; }
+  .tb-prod  { background: rgba(186,117,23,0.2); color: #EF9F27; }
+
+  .tool-desc {
+    font-size: clamp(12px, 3vw, 13px);
+    color: rgba(255,255,255,0.5); line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .tool-uses {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .use-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.22); margin-bottom: 4px;
+  }
+  .use-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: clamp(11px, 2.8vw, 12px);
+    color: rgba(255,255,255,0.5); line-height: 1.5;
+  }
+  .use-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .tc-text  .use-dot { background: #534AB7; }
+  .tc-image .use-dot { background: #D85A30; }
+  .tc-av    .use-dot { background: #1D9E75; }
+  .tc-prod  .use-dot { background: #BA7517; }
+
+  .tool-tip {
+    margin-top: 12px; padding: 10px 13px;
+    border-radius: 8px; font-size: clamp(11px, 2.8vw, 12px);
+    color: rgba(255,255,255,0.55); line-height: 1.6;
+    font-style: italic;
+  }
+  .tt-text  { background: rgba(83,74,183,0.08);  border: 1px solid rgba(83,74,183,0.2); }
+  .tt-image { background: rgba(216,90,48,0.08);  border: 1px solid rgba(216,90,48,0.2); }
+  .tt-av    { background: rgba(29,158,117,0.08); border: 1px solid rgba(29,158,117,0.2); }
+  .tt-prod  { background: rgba(186,117,23,0.08); border: 1px solid rgba(186,117,23,0.2); }
+
+  /* ── SEPARATOR ── */
+  .sep {
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    margin: 8px 20px 0;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .comp-wrap { padding: 20px; margin-top: 4px; }
+  .comp-title {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.18); margin-bottom: 14px;
+  }
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table th {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .comp-table td {
+    font-size: clamp(11px, 2.8vw, 12px);
+    color: rgba(255,255,255,0.55);
+    padding: 10px 10px; line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table td:first-child {
+    font-weight: 600; color: rgba(255,255,255,0.8);
+    white-space: nowrap;
+  }
+  .check { color: #5DCAA5; }
+  .cross { color: rgba(200,100,100,0.7); }
+  .neutral { color: rgba(255,255,255,0.3); }
+
+  /* ── GOLDEN RULE ── */
+  .golden {
+    margin: 12px 20px 0;
+    background: rgba(83,74,183,0.08);
+    border: 1px solid rgba(83,74,183,0.2);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .golden-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #7F77DD; margin-bottom: 8px;
+  }
+  .golden p {
+    font-size: clamp(12px, 3vw, 13px);
+    color: rgba(255,255,255,0.55); line-height: 1.7;
+  }
+  .golden strong { color: rgba(255,255,255,0.8); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .footer-text {
+    font-size: 11px; color: rgba(255,255,255,0.2); line-height: 1.5;
+  }
+  .footer-text strong { color: rgba(255,255,255,0.4); }
+  .footer-badge {
+    display: inline-block; align-self: flex-start;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #534AB7; border: 1px solid rgba(83,74,183,0.3);
+    border-radius: 20px; padding: 5px 14px;
+  }
+
+  /* ── hidden sections ── */
+  .cat-section { display: block; }
+  .cat-section.hidden { display: none; }
+
+  /* ── TABLET ≥ 600px ── */
+  @media (min-width: 600px) {
+    .header    { padding: 44px 36px 36px; }
+    .cat-nav   { padding: 18px 36px; }
+    .section   { padding: 32px 36px 8px; }
+    .sep       { margin: 8px 36px 0; }
+    .comp-wrap { padding: 24px 36px; }
+    .golden    { margin: 12px 36px 0; }
+    .footer    { padding: 24px 36px; flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+
+  /* ── DESKTOP ≥ 900px ── */
+  @media (min-width: 900px) {
+    body {
+      background: #f0f0f0;
+      display: flex; justify-content: center;
+      align-items: flex-start; padding: 40px 24px;
+    }
+    .page-wrap {
+      width: 100%; max-width: 900px;
+      background: #0d0d1a;
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    }
+    .header    { padding: 52px 60px 42px; }
+    .cat-nav   { padding: 18px 60px; }
+    .section   { padding: 36px 60px 8px; }
+    .sep       { margin: 8px 60px 0; }
+    .comp-wrap { padding: 28px 60px; }
+    .golden    { margin: 12px 60px 0; }
+    .footer    { padding: 24px 60px; }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .tools-grid.triple { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page-wrap { box-shadow: none; border-radius: 0; max-width: 100%; }
+    .cat-nav { position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow">Treinamento IA — Referência Rápida</div>
+    <h1>Guia de <span>Ferramentas</span></h1>
+    <p>Não existe a ferramenta perfeita para tudo — existe a certa para cada tarefa. Use este guia para escolher a ideal para o seu momento.</p>
+  </div>
+
+  <!-- CATEGORY NAV -->
+  <nav class="cat-nav">
+    <button class="cat-btn c-all active" onclick="filter('all', this)">Todas</button>
+    <button class="cat-btn c-text"  onclick="filter('text', this)">💬 Texto e Raciocínio</button>
+    <button class="cat-btn c-image" onclick="filter('image', this)">🖼 Imagens</button>
+    <button class="cat-btn c-av"    onclick="filter('av', this)">🎬 Áudio e Vídeo</button>
+    <button class="cat-btn c-prod"  onclick="filter('prod', this)">⚡ Produtividade</button>
+  </nav>
+
+  <!-- ── SEÇÃO 1: TEXTO ── -->
+  <div class="cat-section" id="sec-text">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon si-text">💬</div>
+        <div class="section-meta">
+          <div class="section-tag st-text">LLMs — Large Language Models</div>
+          <div class="section-title">Texto, Raciocínio e Análise</div>
+        </div>
+      </div>
+      <div class="section-desc">Os "cérebros" da IA — conversam, escrevem, analisam e raciocinam. São o ponto de partida para qualquer pessoa que quer usar IA.</div>
+
+      <div class="tools-grid triple">
+
+        <div class="tool-card tc-text">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">ChatGPT</div>
+              <div class="tool-maker">OpenAI</div>
+            </div>
+            <span class="tool-badge tb-text">Mais popular</span>
+          </div>
+          <div class="tool-desc">O mais versátil e acessível do mundo. Ótimo para tarefas gerais, raciocínio lógico e análise de dados. Tem versão gratuita robusta e integra geração de imagens com DALL-E.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Rascunhar e-mails e documentos</div>
+            <div class="use-item"><span class="use-dot"></span>Analisar planilhas e dados</div>
+            <div class="use-item"><span class="use-dot"></span>Criar roteiros e apresentações</div>
+            <div class="use-item"><span class="use-dot"></span>Resolver dúvidas gerais do dia a dia</div>
+          </div>
+          <div class="tool-tip tt-text">Dica: comece por aqui se você nunca usou IA. É o mais intuitivo e tem a maior comunidade de suporte.</div>
+        </div>
+
+        <div class="tool-card tc-text">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Claude</div>
+              <div class="tool-maker">Anthropic</div>
+            </div>
+            <span class="tool-badge tb-text">Rei da escrita</span>
+          </div>
+          <div class="tool-desc">Excelente para escrever de forma natural, empática e com voz humana. Destaque absoluto na análise de documentos longos — suporta PDFs completos de centenas de páginas.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Escrita longa e com voz natural</div>
+            <div class="use-item"><span class="use-dot"></span>Análise de contratos e PDFs extensos</div>
+            <div class="use-item"><span class="use-dot"></span>Revisão e melhoria de textos</div>
+            <div class="use-item"><span class="use-dot"></span>Respostas mais detalhadas e reflexivas</div>
+          </div>
+          <div class="tool-tip tt-text">Dica: ideal para quem precisa de escrita com mais cuidado e nuance — relatórios, comunicados e conteúdo de alto valor.</div>
+        </div>
+
+        <div class="tool-card tc-text">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Gemini</div>
+              <div class="tool-maker">Google</div>
+            </div>
+            <span class="tool-badge tb-text">Conectado ao Google</span>
+          </div>
+          <div class="tool-desc">A melhor opção para pesquisas com informações em tempo real. Integra nativamente com Google Docs, Drive e Gmail — ideal para quem já vive no ecossistema Google.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Pesquisas com dados atualizados</div>
+            <div class="use-item"><span class="use-dot"></span>Trabalhar dentro do Google Docs</div>
+            <div class="use-item"><span class="use-dot"></span>Resumir e-mails e reuniões no Gmail</div>
+            <div class="use-item"><span class="use-dot"></span>Buscar notícias e fatos recentes</div>
+          </div>
+          <div class="tool-tip tt-text">Dica: se você usa Google Workspace no trabalho, o Gemini já está integrado — não precisa nem sair da plataforma.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Comparativo LLMs -->
+    <div class="comp-wrap">
+      <div class="comp-title">Comparativo rápido — qual LLM usar?</div>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Tarefa</th>
+            <th>ChatGPT</th>
+            <th>Claude</th>
+            <th>Gemini</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Uso geral do dia a dia</td>
+            <td><span class="check">✓ Melhor</span></td>
+            <td><span class="check">✓ Ótimo</span></td>
+            <td><span class="check">✓ Bom</span></td>
+          </tr>
+          <tr>
+            <td>Escrita natural e longa</td>
+            <td><span class="neutral">— Bom</span></td>
+            <td><span class="check">✓ Melhor</span></td>
+            <td><span class="neutral">— Regular</span></td>
+          </tr>
+          <tr>
+            <td>Análise de PDFs longos</td>
+            <td><span class="neutral">— Limitado</span></td>
+            <td><span class="check">✓ Melhor</span></td>
+            <td><span class="neutral">— Bom</span></td>
+          </tr>
+          <tr>
+            <td>Pesquisa em tempo real</td>
+            <td><span class="neutral">— Pago</span></td>
+            <td><span class="cross">✗ Não tem</span></td>
+            <td><span class="check">✓ Melhor</span></td>
+          </tr>
+          <tr>
+            <td>Integração Google Workspace</td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="check">✓ Nativa</span></td>
+          </tr>
+          <tr>
+            <td>Versão gratuita útil</td>
+            <td><span class="check">✓ Sim</span></td>
+            <td><span class="check">✓ Sim</span></td>
+            <td><span class="check">✓ Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- ── SEÇÃO 2: IMAGENS ── -->
+  <div class="cat-section" id="sec-image">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon si-image">🖼</div>
+        <div class="section-meta">
+          <div class="section-tag st-image">Image Generation</div>
+          <div class="section-title">Geração e Edição de Imagens</div>
+        </div>
+      </div>
+      <div class="section-desc">Da imaginação à imagem em segundos. Cada ferramenta tem seu ponto forte — escolha de acordo com o resultado que você quer.</div>
+
+      <div class="tools-grid">
+
+        <div class="tool-card tc-image">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Midjourney</div>
+              <div class="tool-maker">Via Discord</div>
+            </div>
+            <span class="tool-badge tb-image">Maior qualidade</span>
+          </div>
+          <div class="tool-desc">A referência mundial em qualidade artística e fotorrealismo. Os resultados são impressionantes — mas exige curva de aprendizado pois opera via Discord com comandos específicos.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Arte conceitual e fotorrealismo</div>
+            <div class="use-item"><span class="use-dot"></span>Material visual premium e autoral</div>
+            <div class="use-item"><span class="use-dot"></span>Ilustrações de alta qualidade estética</div>
+          </div>
+          <div class="tool-tip tt-image">Atenção: requer conta no Discord e tem versão paga. Não tem interface web simples — é mais para quem quer resultados profissionais.</div>
+        </div>
+
+        <div class="tool-card tc-image">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">DALL-E 3</div>
+              <div class="tool-maker">OpenAI — no ChatGPT</div>
+            </div>
+            <span class="tool-badge tb-image">Fiel ao prompt</span>
+          </div>
+          <div class="tool-desc">A melhor para seguir instruções exatas. Se você descreve algo específico — incluindo textos na imagem —  ela entrega com precisão. Acessível direto pelo ChatGPT.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Imagens com texto preciso dentro</div>
+            <div class="use-item"><span class="use-dot"></span>Conceitos muito específicos e detalhados</div>
+            <div class="use-item"><span class="use-dot"></span>Quem já usa o ChatGPT no dia a dia</div>
+          </div>
+          <div class="tool-tip tt-image">Dica: ideal para criar banners, capas e materiais onde o texto e o visual precisam estar perfeitamente alinhados.</div>
+        </div>
+
+        <div class="tool-card tc-image">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Canva AI</div>
+              <div class="tool-maker">Canva</div>
+            </div>
+            <span class="tool-badge tb-image">Mais fácil</span>
+          </div>
+          <div class="tool-desc">Integrado à plataforma de design mais usada do mundo. Gera e edita imagens dentro do Canva com facilidade total. Perfeito para quem já usa o Canva no dia a dia.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Posts para redes sociais</div>
+            <div class="use-item"><span class="use-dot"></span>Apresentações e materiais de marketing</div>
+            <div class="use-item"><span class="use-dot"></span>Edição rápida sem sair do Canva</div>
+          </div>
+          <div class="tool-tip tt-image">Dica: se você já usa o Canva, não precisa aprender nenhuma ferramenta nova — a IA já está lá dentro.</div>
+        </div>
+
+        <div class="tool-card tc-image">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Leonardo.ai</div>
+              <div class="tool-maker">Leonardo</div>
+            </div>
+            <span class="tool-badge tb-image">Controle avançado</span>
+          </div>
+          <div class="tool-desc">Alternativa profissional com recursos avançados de controle de estilo e consistência visual. Ideal para criar personagens e cenários que precisam ser iguais entre diferentes imagens.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Personagens consistentes em sequência</div>
+            <div class="use-item"><span class="use-dot"></span>Estilos visuais personalizados</div>
+            <div class="use-item"><span class="use-dot"></span>Projetos com identidade visual forte</div>
+          </div>
+          <div class="tool-tip tt-image">Dica: tem versão gratuita generosa. Ótimo para projetos criativos que exigem consistência visual ao longo do tempo.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- ── SEÇÃO 3: ÁUDIO E VÍDEO ── -->
+  <div class="cat-section" id="sec-av">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon si-av">🎬</div>
+        <div class="section-meta">
+          <div class="section-tag st-av">Nova Fronteira</div>
+          <div class="section-title">Áudio e Vídeo</div>
+        </div>
+      </div>
+      <div class="section-desc">A tecnologia que parecia ficção científica há 3 anos. Hoje qualquer pessoa pode criar vídeos e vozes profissionais sem equipamento.</div>
+
+      <div class="tools-grid triple">
+
+        <div class="tool-card tc-av">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">ElevenLabs</div>
+              <div class="tool-maker">ElevenLabs</div>
+            </div>
+            <span class="tool-badge tb-av">Voz ultra-realista</span>
+          </div>
+          <div class="tool-desc">A referência global em síntese de voz. Gera vozes ultra-realistas em português e tem clonagem de voz — você cria uma versão digital da sua própria voz com poucos minutos de áudio.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Narrar vídeos sem gravar</div>
+            <div class="use-item"><span class="use-dot"></span>Criar podcasts e audiobooks</div>
+            <div class="use-item"><span class="use-dot"></span>Clonar sua própria voz</div>
+          </div>
+          <div class="tool-tip tt-av">Dica: com a versão gratuita você já consegue gerar narração de qualidade profissional. Testou uma vez, não volta para gravação manual.</div>
+        </div>
+
+        <div class="tool-card tc-av">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">HeyGen</div>
+              <div class="tool-maker">HeyGen</div>
+            </div>
+            <span class="tool-badge tb-av">Avatar digital</span>
+          </div>
+          <div class="tool-desc">Cria vídeos com avatares virtuais hiper-realistas. Você digita o roteiro e o avatar fala — sem câmera, sem edição, sem aparecer. Ideal para criar vídeos em escala.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Vídeos de vendas e apresentação</div>
+            <div class="use-item"><span class="use-dot"></span>Tutoriais e onboarding de clientes</div>
+            <div class="use-item"><span class="use-dot"></span>Conteúdo em múltiplos idiomas</div>
+          </div>
+          <div class="tool-tip tt-av">Dica: o HeyGen também traduz e dubla vídeos automaticamente — seu rosto fala em outro idioma com sincronização labial.</div>
+        </div>
+
+        <div class="tool-card tc-av">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Synthesia</div>
+              <div class="tool-maker">Synthesia</div>
+            </div>
+            <span class="tool-badge tb-av">Foco corporativo</span>
+          </div>
+          <div class="tool-desc">Similar ao HeyGen com foco em empresas e times. Excelente para criar vídeos de treinamento interno, comunicados e apresentações de produto em larga escala com qualidade consistente.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Treinamentos corporativos em escala</div>
+            <div class="use-item"><span class="use-dot"></span>Comunicação interna de equipes</div>
+            <div class="use-item"><span class="use-dot"></span>Vídeos institucionais padronizados</div>
+          </div>
+          <div class="tool-tip tt-av">Dica: ideal para empresas que precisam criar muito conteúdo em vídeo de forma padronizada, sem depender de produtoras.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- ── SEÇÃO 4: PRODUTIVIDADE ── -->
+  <div class="cat-section" id="sec-prod">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon si-prod">⚡</div>
+        <div class="section-meta">
+          <div class="section-tag st-prod">No Fluxo de Trabalho</div>
+          <div class="section-title">Produtividade e Apresentações</div>
+        </div>
+      </div>
+      <div class="section-desc">As melhores ferramentas são as que entram no seu fluxo sem criar mais etapas. IA onde o trabalho já acontece.</div>
+
+      <div class="tools-grid">
+
+        <div class="tool-card tc-prod">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Gamma App</div>
+              <div class="tool-maker">Gamma</div>
+            </div>
+            <span class="tool-badge tb-prod">Slides em 1 prompt</span>
+          </div>
+          <div class="tool-desc">Cria apresentações completas de slides a partir de um único parágrafo. Você descreve o tema e ele gera estrutura, design e conteúdo automaticamente em segundos.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Apresentações rápidas do zero</div>
+            <div class="use-item"><span class="use-dot"></span>Pitch de projetos e propostas</div>
+            <div class="use-item"><span class="use-dot"></span>Reuniões com pouco tempo de preparo</div>
+          </div>
+          <div class="tool-tip tt-prod">Experimente: "Crie uma apresentação sobre estratégias de vendas para 2025 em 8 slides" — pronto em 30 segundos.</div>
+        </div>
+
+        <div class="tool-card tc-prod">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Tome</div>
+              <div class="tool-maker">Tome</div>
+            </div>
+            <span class="tool-badge tb-prod">Narrativa visual</span>
+          </div>
+          <div class="tool-desc">Alternativa ao Gamma com foco em storytelling visual e narrativa envolvente. Ideal para pitches executivos e apresentações onde a história importa tanto quanto o conteúdo.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Pitches para investidores</div>
+            <div class="use-item"><span class="use-dot"></span>Apresentações executivas</div>
+            <div class="use-item"><span class="use-dot"></span>Relatórios com identidade visual forte</div>
+          </div>
+          <div class="tool-tip tt-prod">Dica: o Tome gera conteúdo com mais cuidado narrativo — ótimo quando a primeira impressão precisa ser impactante.</div>
+        </div>
+
+        <div class="tool-card tc-prod">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Notion AI</div>
+              <div class="tool-maker">Notion</div>
+            </div>
+            <span class="tool-badge tb-prod">IA no workspace</span>
+          </div>
+          <div class="tool-desc">IA integrada ao Notion — resume páginas longas, gera rascunhos, cria listas de ação a partir de notas de reunião e responde perguntas sobre o conteúdo da sua base de conhecimento.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Resumir reuniões e extrair ações</div>
+            <div class="use-item"><span class="use-dot"></span>Gerar rascunhos dentro do Notion</div>
+            <div class="use-item"><span class="use-dot"></span>Organizar base de conhecimento</div>
+          </div>
+          <div class="tool-tip tt-prod">Dica: se o seu time já usa o Notion, ativar o Notion AI é a adição de IA com menor atrito possível — zero mudança de hábito.</div>
+        </div>
+
+        <div class="tool-card tc-prod">
+          <div class="tool-top">
+            <div>
+              <div class="tool-name">Microsoft Copilot</div>
+              <div class="tool-maker">Microsoft</div>
+            </div>
+            <span class="tool-badge tb-prod">No pacote Office</span>
+          </div>
+          <div class="tool-desc">IA integrada ao Word, Excel, PowerPoint e Teams. Resume reuniões, sugere fórmulas para planilhas, gera slides e rascunha e-mails — tudo dentro do Office que você já usa.</div>
+          <div class="tool-uses">
+            <div class="use-label">Use para</div>
+            <div class="use-item"><span class="use-dot"></span>Resumir reuniões no Teams</div>
+            <div class="use-item"><span class="use-dot"></span>Criar fórmulas e análises no Excel</div>
+            <div class="use-item"><span class="use-dot"></span>Gerar slides no PowerPoint</div>
+          </div>
+          <div class="tool-tip tt-prod">Dica: disponível para assinaturas Microsoft 365 Business. Se sua empresa já paga o Office, vale perguntar ao TI sobre a ativação.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- GOLDEN RULE -->
+  <div class="golden">
+    <div class="golden-label">Regra de ouro</div>
+    <p>Não tente usar todas as ferramentas ao mesmo tempo. <strong>Escolha 2 ou 3 que resolvem os seus problemas reais e domine-as antes de adicionar novas.</strong> A paralisia pela quantidade de opções é o maior inimigo de quem está começando com IA.</p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-text"><strong>Treinamento de Inteligência Artificial</strong><br>Material do Participante</div>
+    <div class="footer-badge">Guia de Ferramentas</div>
+  </div>
+
+</div>
+
+<script>
+  function filter(cat, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const sections = {
+      text:  document.getElementById('sec-text'),
+      image: document.getElementById('sec-image'),
+      av:    document.getElementById('sec-av'),
+      prod:  document.getElementById('sec-prod'),
+    };
+    const seps = document.querySelectorAll('.sep');
+
+    if (cat === 'all') {
+      Object.values(sections).forEach(s => s.classList.remove('hidden'));
+      seps.forEach(s => s.style.display = '');
+    } else {
+      Object.entries(sections).forEach(([key, el]) => {
+        el.classList.toggle('hidden', key !== cat);
+      });
+      seps.forEach(s => s.style.display = 'none');
+    }
+  }
+</script>
+</body>
+</html>
